@@ -1,15 +1,35 @@
-# Rands – iPhone expense tracker (no Mac needed)
+# Rands – secure iPhone expense tracker (no Mac needed)
 
-A Home Screen web app: offline, data stays on your phone.
+A Home Screen web app. It works offline, all data is encrypted, and nothing leaves your phone.
 
-## Install on your iPhone (GitHub Pages, free)
-1. On github.com create a **public** repo called `rands`.
-2. Add file → Upload files → upload everything in this folder (index.html, manifest.json, sw.js, the 3 icons). Commit.
-3. Repo Settings → Pages → Source: *Deploy from a branch* → `main` / `(root)` → Save.
-4. After ~1 minute open `https://<your-username>.github.io/rands/` in **Safari**.
-5. Share → **Add to Home Screen** → Add. Launch it from the icon.
+## Security
+- **Passcode lock:** a 6-digit passcode is required to open the app. Easy patterns like 111111 or 123456 are rejected.
+- **Encryption:** data is encrypted at rest with AES-256-GCM. The key is derived from your passcode with PBKDF2-SHA256 (600k iterations) and is only held in memory while the app is unlocked.
+- **Face ID:** optional. It uses a passkey with the WebAuthn PRF extension (iOS 18+), so Face ID unwraps the encryption key itself instead of just showing or hiding the screen.
+- **Lockouts:** after 5 wrong passcode attempts, entry is locked for 30 s, then 1 min, 2 min and so on, up to 1 hour.
+- **Auto-lock:** choose immediately, 1, 5 or 15 minutes. Your numbers are hidden in the iOS app switcher.
+- **Encrypted backups:** backups are protected by a password you choose. CSV exports are plain text and the app warns you before exporting one.
+- **Strict Content-Security-Policy:** no third-party scripts, no network calls, and all libraries are bundled with the app.
+- **No recovery:** if you forget your passcode the data can't be recovered. Keep a backup.
 
-## Notes
-- Data lives in the Home Screen app's own storage. Use Settings → *Back up data (JSON)* now and then (save to Files/iCloud).
-- Updating: edit files, push, and bump `CACHE` in sw.js (e.g. rands-v2).
-- Local testing on a computer: `python3 -m http.server 8000` in this folder, open http://localhost:8000.
+## Import (Settings → Import, or the ⇪ Import link)
+- **Bank statements:** .xlsx, .csv or text-based PDF (FNB, Standard Bank, Absa, Nedbank and Capitec layouts). The app:
+  - detects the header row and columns, date formats (including Excel dates and yyyymmdd), and R 1 234,56 / Dr / Cr / negative amounts
+  - tells money out from money in, using the running balance in PDFs
+  - opens password-protected PDFs (it asks for the password)
+- **Your own spreadsheets**, including ones with a Category column. Your category names are mapped to Rands categories.
+- **Budget sheets** (Category + Amount): these set per-category budgets. Workbooks with several tabs let you pick the tab.
+- **Auto-categorisation:** about 150 SA merchants are recognised (Woolies, Checkers, Engen, Nando's, Vodacom, Dis-Chem…). When you change a category, every similar merchant changes with it, and the app remembers the choice for future imports.
+- **Duplicates:** expenses already in Rands are flagged and left unticked.
+- **Manual mapping:** if detection gets a column wrong, open "Columns detected" and remap it by hand.
+- **Not supported:** old .xls files (save them as .xlsx or .csv first) and scanned image PDFs.
+
+## Install / update on your iPhone (GitHub Pages)
+1. Upload **everything** in this folder, all files sit in one folder, so they can be uploaded together from your phone, to your `rands` repo.
+2. Go to Settings → Pages → Source: *Deploy from a branch* → `main` / `(root)`.
+3. Open `https://<username>.github.io/rands/` in Safari, then tap Share → Add to Home Screen.
+4. Updating: replace the files. The app fetches new versions automatically when it's online.
+
+Your existing (unencrypted) Rands data is encrypted automatically the first time you set a passcode.
+
+Local test: `python3 -m http.server 8000` in this folder, then open http://localhost:8000
