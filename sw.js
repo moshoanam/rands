@@ -1,6 +1,6 @@
 // Rands service worker: makes the app open offline.
 // Bump CACHE when you change files so phones pick up the new version.
-const CACHE = 'rands-v2';
+const CACHE = 'rands-v3';
 const ASSETS = ['./', './index.html', './styles.css', './app.js', './vault.js', './importer.js', './manifest.json',
   './icon-180.png', './icon-192.png', './icon-512.png', './fflate.mjs', './pdf.min.mjs', './pdf.worker.min.mjs'];
 

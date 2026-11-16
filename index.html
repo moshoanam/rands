@@ -37,15 +37,21 @@
 <!-- ============ APP ============ -->
 <div id="app" hidden>
   <div class="wrap">
-    <header>
+    <header id="monthHeader">
       <button class="icon-btn" id="prev" aria-label="Previous month">‹</button>
       <div class="month"><h1 id="monthLabel"></h1></div>
       <button class="icon-btn" id="next" aria-label="Next month">›</button>
     </header>
+    <header id="goalsHeader" hidden><div class="month"><h1>Savings goals</h1></div></header>
 
-    <section class="card" id="summary"></section>
-    <section class="card" id="cats"></section>
-    <div id="list"></div>
+    <div id="viewOverview" class="view"></div>
+    <div id="viewExpenses" class="view" hidden>
+      <section class="card" id="summary"></section>
+      <section class="card" id="cats"></section>
+      <div id="list"></div>
+    </div>
+    <div id="viewIncome" class="view" hidden></div>
+    <div id="viewGoals" class="view" hidden></div>
 
     <div class="footer-links">
       <button class="link" id="openImport">⇪ Import</button>
@@ -54,7 +60,13 @@
     </div>
     <p class="hint" id="installHint" hidden>Tip: tap <b>Share</b> → <b>Add to Home Screen</b> to install Rands as an app.</p>
   </div>
-  <button class="fab" id="add" aria-label="Add expense">+</button>
+  <button class="fab" id="add" aria-label="Add">+</button>
+  <nav class="tabbar" id="tabbar">
+    <button data-tab="overview" class="on"><span>⌂</span>Overview</button>
+    <button data-tab="expenses"><span>↘︎</span>Expenses</button>
+    <button data-tab="income"><span>↗︎</span>Income</button>
+    <button data-tab="goals"><span>◎</span>Goals</button>
+  </nav>
 </div>
 
 <div id="layer">
@@ -128,6 +140,48 @@
     </div>
     <div id="catBudgetList"></div>
     <p class="fine" id="catBudgetTotal"></p>
+  </div>
+
+  <!-- Add chooser (Overview) -->
+  <div class="sheet" id="chooserSheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <div class="sheet-h"><span class="spacer"></span><h3>Add</h3><button class="link" data-close>Close</button></div>
+    <button class="row-btn" data-choose="expense"><span class="row-l">↘︎ Expense</span><span>›</span></button>
+    <button class="row-btn" data-choose="income"><span class="row-l">↗︎ Income</span><span>›</span></button>
+    <button class="row-btn" data-choose="saving"><span class="row-l">◎ Money into a savings goal</span><span>›</span></button>
+    <button class="row-btn" data-choose="goal"><span class="row-l">＋ New savings goal</span><span>›</span></button>
+  </div>
+
+  <!-- Income -->
+  <div class="sheet" id="incomeSheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <div class="sheet-h"><button class="link" data-close>Cancel</button><h3 id="incTitle">New income</h3><span class="spacer"></span></div>
+    <div class="amount"><span>R</span><input id="incAmt" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
+    <div class="chips" id="incChips"></div>
+    <label class="field"><small>Note</small><input id="incNote" placeholder="e.g. November salary" maxlength="80" autocomplete="off"></label>
+    <label class="field"><small>Date</small><input id="incDate" type="date"></label>
+    <button class="primary" id="incSave">Save</button>
+    <button class="danger" id="incDelete" hidden>Delete income</button>
+  </div>
+
+  <!-- Goal create / edit -->
+  <div class="sheet" id="goalSheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <div class="sheet-h"><button class="link" data-close>Cancel</button><h3 id="goalTitle">New goal</h3><span class="spacer"></span></div>
+    <div class="emoji-pick" id="goalEmoji"></div>
+    <label class="field"><small>Goal name</small><input id="goalName" placeholder="e.g. Emergency fund, Holiday, New car" maxlength="40" autocomplete="off"></label>
+    <label class="field"><small>Target amount (R)</small><input id="goalTarget" inputmode="decimal" placeholder="e.g. 50000" autocomplete="off"></label>
+    <label class="field"><small>Target date (optional)</small><input id="goalDate" type="date"></label>
+    <label class="field" id="goalStartWrap"><small>Already saved (optional)</small><input id="goalStart" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+    <button class="primary" id="goalSave">Save goal</button>
+    <button class="danger" id="goalDelete" hidden>Delete goal</button>
+  </div>
+
+  <!-- Goal detail + contributions -->
+  <div class="sheet tall" id="goalDetailSheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <div class="sheet-h"><button class="link" data-close>Close</button><h3 id="gdTitle"></h3><button class="link" id="gdEdit">Edit</button></div>
+    <div id="gdBody" class="scroll"></div>
   </div>
 
   <!-- Import preview -->
